@@ -1,0 +1,102 @@
+// Chris Okura 
+// Programming Assignment- Guessing Game-
+// 
+// This program asks the user to guess a number between 1 and a constant MAX. The program 
+// gives hints to whether the random number generated is higher or lower than the user's 
+// guess. Scanner is used to read input and Random is used to generate a random number. When 
+// the game(s) is over the results are reported.
+
+
+import java.util.*;
+ 
+public class GuessingGame {
+   public static final int MAX = 100;
+   public static void main(String[] args) {
+   
+      Random rand = new Random();
+      Scanner console = new Scanner(System.in);
+      
+      int totalGames = 0;
+      int totalGuesses = 0;
+      int bestGame = 1000000;
+      String choice = "";
+      boolean playAgain = true;
+      
+      giveIntro();
+      
+      while (playAgain == true) {
+         int guess = playOneGame(rand, console, totalGuesses);
+         totalGames++;
+         totalGuesses += guess;
+         
+         if (guess < bestGame) {
+            bestGame = guess;
+         }
+         System.out.print("Do you want to play again? ");
+         choice = console.next();
+         String firstLetter = choice.substring(0, 1);
+         if (!firstLetter.equalsIgnoreCase("y")) { // If the first 
+               // letter of the string the user inputs doesn' start with y
+               // the boolean playAgain is set to false.
+         playAgain = false;
+         }
+         System.out.println("");
+      }
+      
+      reportResults(totalGames, totalGuesses, bestGame);     
+      
+   }
+   
+   // This method gives an intro to the game with a 5-7-5 haiku and then printing 
+   // a blank line.
+   public static void giveIntro() {
+      System.out.println("I guess we'll see soon.");
+      System.out.println("How good you are at guessing.");
+      System.out.println("Try it out, good luck!");
+      System.out.println("");
+   }
+   
+   // This method plays one round of the game taking a Random variable, Scanner, and an integer
+   // as parameters. It returns the number of guessing it took the user to guess the random
+   // variable
+   public static int playOneGame(Random rand, Scanner console, int totalGuesses) {
+      int guess = 0; 
+      int guessesInGame = 0;
+      
+      System.out.println("I'm thinking of a number between 1 and " + MAX + "...");
+      int num = rand.nextInt(MAX) + 1;
+     
+      while (guess != num) {
+         System.out.print("Your guess? ");
+         guess = console.nextInt();
+         guessesInGame++;
+         if (guess > num) {
+            System.out.println("It's lower.");
+         } else if (guess < num) {
+            System.out.println("It's higher.");
+         }
+      }
+         
+      if (guessesInGame == 1) {
+         System.out.println("You got it right in " + guessesInGame + " guess!");
+      } else {
+         System.out.println("You got it right in " + guessesInGame + " guesses!");
+      }
+      return guessesInGame;
+   }
+   
+   // This method prints the results of all the rounds of the games played. It takes three
+   // integers as parameters called totalGames, totalGuesses, and bestGame. This method also
+   // calls a rounding method that rounds the guesses per game to one decimal place.
+   public static void reportResults(int totalGames, int totalGuesses, int bestGame) {
+      System.out.println("Overall results:");
+      System.out.println("Total games   = " + totalGames);
+      System.out.println("Total guesses = " + totalGuesses);
+      System.out.println("Guesses/game  = " + round1((double) totalGuesses / totalGames));
+      System.out.println("Best game     = " + bestGame);
+   }
+   
+   // This method is called in the reportResults method above to round a number to 
+   // one decimal place.
+   public static double round1(double num) {
+      return (Math.round(num * 10.0) / 10.0);
